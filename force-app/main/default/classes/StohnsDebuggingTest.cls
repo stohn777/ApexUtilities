@@ -18,5 +18,7 @@ private class StohnsDebuggingTest
 
         StohnsDebugging.getInstance()
             .debug();
+
+        StohnsDebugging.start().debug('contact again', c, true);
     }
 }

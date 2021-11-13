@@ -1,13 +1,18 @@
 public inherited sharing class StohnsDebugging
 {
 	private static StohnsDebugging myInstance = null;
-	private String title = '';
+	private String title;
 	private List<StohnsDebuggingItem> items = new List<StohnsDebuggingItem>();
 
 	public static StohnsDebugging getInstance()
 	{
 		if (myInstance == null) myInstance = new StohnsDebugging();
 		return myInstance;
+	}
+
+	public static StohnsDebugging start()
+	{
+		return start(null);
 	}
 
 	public static StohnsDebugging start(String title)
@@ -32,7 +37,7 @@ public inherited sharing class StohnsDebugging
 	public StohnsDebugging debug()
 	{
 		debug(items);
-		items.clear();
+		clearItems();
 		return this;
 	}
 
