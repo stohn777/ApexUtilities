@@ -17,7 +17,7 @@ public inherited sharing class StohnsDebugging
 
 	public static StohnsDebugging start(String title)
 	{
-		myInstance = StohnsDebugging.getInstance();
+		myInstance = new StohnsDebugging();
 		myInstance.title = title;
 		return myInstance;
 	}
@@ -37,7 +37,6 @@ public inherited sharing class StohnsDebugging
 	public StohnsDebugging debug()
 	{
 		debug(items);
-		clearItems();
 		return this;
 	}
 
@@ -56,6 +55,11 @@ public inherited sharing class StohnsDebugging
 		catch (Exception exc)
 		{
 			System.debug('<js> DEBUGGING ERROR -- Could NOT debug because:\n' + exc.getMessage() + '\n' + exc.getStackTraceString());
+		}
+		finally
+		{
+			clearItems();
+			title = null;
 		}
 
 		return this;
