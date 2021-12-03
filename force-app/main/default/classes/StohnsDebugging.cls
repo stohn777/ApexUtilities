@@ -2,7 +2,7 @@ public inherited sharing class StohnsDebugging
 {
 	private static StohnsDebugging myInstance = null;
 	private String title;
-	private List<StohnsDebuggingItem> items = new List<StohnsDebuggingItem>();
+	private List<String> output = new List<String>();
 
 	public static StohnsDebugging getInstance()
 	{
@@ -17,6 +17,7 @@ public inherited sharing class StohnsDebugging
 
 	public static StohnsDebugging start(String title)
 	{
+		myInstance = null;
 		myInstance = new StohnsDebugging();
 		myInstance.title = title;
 		return myInstance;
@@ -24,33 +25,34 @@ public inherited sharing class StohnsDebugging
 
 	public StohnsDebugging clearItems()
 	{
-		items.clear();
+		output.clear();
 		return this;
 	}
 
 	public StohnsDebugging push(String name, Object item, Boolean serialize)
 	{
-		items.add(new StohnsDebuggingItem(name, item, serialize));
+		output.add(buildOutputForItem(name, item, serialize));
 		return this;
 	}
 
 	public StohnsDebugging debug()
 	{
-		debug(items);
+		debug(output);
 		return this;
 	}
 
 	public StohnsDebugging debug(String name, Object item, Boolean serialize)
 	{
-		debug(new List<StohnsDebuggingItem> { new StohnsDebuggingItem(name, item, serialize) });
+		push(name, item, serialize);
+		debug();
 		return this;
 	}
 
-	public StohnsDebugging debug(List<StohnsDebuggingItem> itemList)
+	public StohnsDebugging debug(List<String> output)
 	{
 		try
 		{
-			System.debug('<js> ========== ' + ((String.isNotBlank(title)) ? title : 'Debugging') + ' ==========\n' + String.join(buildOutputForList(itemList), '\n'));
+			System.debug('<js> ========== ' + ((String.isNotBlank(title)) ? title : 'Debugging') + ' ==========\n' + String.join(output, '\n'));
 		}
 		catch (Exception exc)
 		{
@@ -58,7 +60,7 @@ public inherited sharing class StohnsDebugging
 		}
 		finally
 		{
-			clearItems();
+			output.clear();
 			title = null;
 		}
 
@@ -82,16 +84,6 @@ public inherited sharing class StohnsDebugging
 		return this;
 	}
 
-	private static List<String> buildOutputForList(List<StohnsDebuggingItem> itemList)
-	{
-		List<String> output = new List<String>();
-		for (StohnsDebuggingItem i : itemList)
-		{
-			output.add(buildOutputForItem(i.name, i.item, i.serialize));
-		}
-		return output;
-	}
-
 	private static String buildOutputForItem(String name, Object item, Boolean serialize)
 	{
 		String itemString = '**null**';
@@ -112,20 +104,6 @@ public inherited sharing class StohnsDebugging
 		catch (Exception exc)
 		{
 			return '** Could NOT serialize the item **\n' + item.toString();
-		}
-	}
-
-	public class StohnsDebuggingItem
-	{
-		public String name = 'not set';
-		public Object item = null;
-		public Boolean serialize = false;
-
-		public StohnsDebuggingItem(String name, Object item, Boolean serialize)
-		{
-			this.name = name;
-			this.item = item;
-			this.serialize = serialize;
 		}
 	}
 }
