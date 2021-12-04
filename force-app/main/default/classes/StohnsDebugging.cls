@@ -23,6 +23,11 @@ public inherited sharing class StohnsDebugging
 		return myInstance;
 	}
 
+	public static void dbg(String title, Object item)
+	{
+		System.debug('<js> ' + title + ':\n' + serializeOutput(item));
+	}
+
 	public StohnsDebugging clearItems()
 	{
 		output.clear();
