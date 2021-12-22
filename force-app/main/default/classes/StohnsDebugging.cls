@@ -17,7 +17,6 @@ public inherited sharing class StohnsDebugging
 
 	public static StohnsDebugging start(String title)
 	{
-		myInstance = null;
 		myInstance = new StohnsDebugging();
 		myInstance.title = title;
 		return myInstance;

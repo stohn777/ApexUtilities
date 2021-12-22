@@ -20,8 +20,5 @@ private class StohnsDebuggingTest
             .debug();
 
         StohnsDebugging.start().debug('contact again', c, true);
-
-        StohnsDebugging.start()
-            .debug(new List<StohnsDebugging.StohnsDebuggingItem> { new StohnsDebugging.StohnsDebuggingItem('contact thrice', c, true)});
     }
 }
