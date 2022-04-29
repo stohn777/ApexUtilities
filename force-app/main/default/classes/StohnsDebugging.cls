@@ -33,6 +33,11 @@ public inherited sharing class StohnsDebugging
 		return this;
 	}
 
+	public StohnsDebugging push(String name, Object item)
+	{
+		return push(name, item, true);
+	}
+
 	public StohnsDebugging push(String name, Object item, Boolean serialize)
 	{
 		output.add(buildOutputForItem(name, item, serialize));
@@ -73,19 +78,25 @@ public inherited sharing class StohnsDebugging
 
 	public StohnsDebugging whereAmI()
 	{
-		String whereami;
+		push('where am i', doWhereAmI(), false);
+		return this;
+	}
 
+	public static void whereAmI_static()
+	{
+		System.debug('<js> where am i:\n' + doWhereAmI());
+	}
+
+	private static String doWhereAmI()
+	{
 		try
 		{
-			Integer i = 1/0;
+			throw new StohnsDebuggingException();
 		}
-		catch (Exception exc)
+		catch (StohnsDebuggingException sde)
 		{
-			whereami = exc.getStackTraceString();
+			return sde.getStackTraceString();
 		}
-
-		push('where am i', whereami, false);
-		return this;
 	}
 
 	private static String buildOutputForItem(String name, Object item, Boolean serialize)
@@ -93,10 +104,10 @@ public inherited sharing class StohnsDebugging
 		String itemString = '**null**';
 		if (item != null) itemString = ((serialize) ? serializeOutput(item) : item.toString());
 
-		return 
-			'>>>>>>>  ' + 
-			name + ':\n' + 
-			itemString;
+		return
+			'>>>>>>>  ' +
+				name + ':\n' +
+				itemString;
 	}
 
 	private static String serializeOutput(Object item)
@@ -109,5 +120,11 @@ public inherited sharing class StohnsDebugging
 		{
 			return '** Could NOT serialize the item **\n' + item.toString();
 		}
+	}
+
+	public class StohnsDebuggingException
+		extends Exception
+	{
+		// intentionally blank
 	}
 }

@@ -13,6 +13,7 @@ private class StohnsDebuggingTest
 
         StohnsDebugging.start('This is a test')
             .whereAmI()
+            .push('hello world', 'nice day, aye')
             .push('simple text', 'hello world', false)
             .push('contact', c, true);
 
@@ -20,5 +21,7 @@ private class StohnsDebuggingTest
             .debug();
 
         StohnsDebugging.start().debug('contact again', c, true);
+
+        StohnsDebugging.whereAmI_static();
     }
 }
