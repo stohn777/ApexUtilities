@@ -1,13 +1,17 @@
 public inherited sharing class StohnsDebugging
 {
-	private static StohnsDebugging myInstance = null;
-	private String title;
+	private static Map<String, StohnsDebugging> instanceMap = new Map<String, StohnsDebugging>();
+	private String instanceName;
 	private List<String> output = new List<String>();
 
 	public static StohnsDebugging getInstance()
 	{
-		if (myInstance == null) myInstance = new StohnsDebugging();
-		return myInstance;
+		return getInstance(null);
+	}
+
+	public static StohnsDebugging getInstance(String name)
+	{
+		return start(name);
 	}
 
 	public static StohnsDebugging start()
@@ -15,11 +19,17 @@ public inherited sharing class StohnsDebugging
 		return start(null);
 	}
 
-	public static StohnsDebugging start(String title)
+	public static StohnsDebugging start(String instanceName)
 	{
-		myInstance = new StohnsDebugging();
-		myInstance.title = title;
-		return myInstance;
+		String instanceNameLowerCase = instanceName?.toLowerCase();
+
+		if (!instanceMap.containsKey(instanceNameLowerCase))
+		{
+			StohnsDebugging sdb = new StohnsDebugging();
+			sdb.instanceName = instanceName;
+			instanceMap.put(instanceNameLowerCase, sdb);
+		}
+		return instanceMap.get(instanceNameLowerCase);
 	}
 
 	public static void dbg(String title, Object item)
@@ -50,6 +60,11 @@ public inherited sharing class StohnsDebugging
 		return this;
 	}
 
+	public StohnsDebugging debug(String name, Object item)
+	{
+		return debug(name, item, true);
+	}
+
 	public StohnsDebugging debug(String name, Object item, Boolean serialize)
 	{
 		push(name, item, serialize);
@@ -61,7 +76,7 @@ public inherited sharing class StohnsDebugging
 	{
 		try
 		{
-			System.debug('<js> ========== ' + ((String.isNotBlank(title)) ? title : 'Debugging') + ' ==========\n' + String.join(output, '\n'));
+			System.debug('<js> ========== ' + ((String.isNotBlank(instanceName)) ? instanceName : 'Debugging') + ' ==========\n' + String.join(output, '\n'));
 		}
 		catch (Exception exc)
 		{
@@ -70,7 +85,7 @@ public inherited sharing class StohnsDebugging
 		finally
 		{
 			output.clear();
-			title = null;
+			instanceName = null;
 		}
 
 		return this;
